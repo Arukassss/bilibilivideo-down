@@ -8,19 +8,19 @@ import time
 class video(object):
     @classmethod
     def __init__(self):
-        self.outpath = 'C:/Users/Arukas/Videos'  # ÊÓÆµ±£´æµÄÄ¿Â¼
-        self.ffmpegpath = './ffmepg.exe' #ffmpegµÄÄ¿Â¼
+        self.outpath = ''  # è§†é¢‘ä¿å­˜çš„ç›®å½•
+        self.ffmpegpath = './ffmepg.exe' #ffmpegçš„ç›®å½•
         self.last_date = 0
         self.top20created = []
         self.top20bvid = []
-        self.mid =   # ÓÃ»§µÄUID
+        self.mid =   # ç”¨æˆ·çš„UID
         self.bvid = ''
         self.headers = {
             "Referer": f"https://space.bilibili.com/{self.mid}/video",
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.33",
         }
 
-    def cr_bat(self):  # ´´½¨ÏÂÔØÊÓÆµµÄBATÎÄ¼ş
+    def cr_bat(self):  # åˆ›å»ºä¸‹è½½è§†é¢‘çš„BATæ–‡ä»¶
         if len(self.top20bvid) != 0:
             for i in range(len(self.top20bvid)):
                 if not os.path.exists(f'{self.top20bvid[i]}.bat'):
@@ -35,33 +35,33 @@ class video(object):
         row_json = requests.get(
             f'https://api.bilibili.com/x/polymer/web-dynamic/v1/feed/space?offset=&host_mid={self.mid}&timezone_offset=-480',
             headers=self.headers, timeout=5).json()
-        for i in range(len(row_json['data']['items'])):  # ±éÀú»ñÈ¡µÄ¶¯Ì¬ÄÚÈİ
-            self.top20created.append(row_json['data']['items'][i]['modules']['module_author']['pub_ts'])  # ½«ËùÓĞ¶¯Ì¬µÄ·¢²¼Ê±¼ä±éÀú
-            if row_json['data']['items'][i]['type'] == 'DYNAMIC_TYPE_AV':  # ÅĞ¶Ï¶¯Ì¬ÀàĞÍÊÇ·ñÎªÊÓÆµ
+        for i in range(len(row_json['data']['items'])):  # éå†è·å–çš„åŠ¨æ€å†…å®¹
+            self.top20created.append(row_json['data']['items'][i]['modules']['module_author']['pub_ts'])  # å°†æ‰€æœ‰åŠ¨æ€çš„å‘å¸ƒæ—¶é—´éå†
+            if row_json['data']['items'][i]['type'] == 'DYNAMIC_TYPE_AV':  # åˆ¤æ–­åŠ¨æ€ç±»å‹æ˜¯å¦ä¸ºè§†é¢‘
 
-                if row_json['data']['items'][i]['modules']['module_author']['pub_ts'] > self.last_date:  # ÅĞ¶ÏÊÇ·¢²¼Ê±¼äÊÇ·ñÎªÂÖÑ¯Ê±¼äÖ®ºó
+                if row_json['data']['items'][i]['modules']['module_author']['pub_ts'] > self.last_date:  # åˆ¤æ–­æ˜¯å‘å¸ƒæ—¶é—´æ˜¯å¦ä¸ºè½®è¯¢æ—¶é—´ä¹‹å
                     title_temp = str(
                         row_json['data']['items'][i]['modules']['module_dynamic']['major']['archive']['title'])
-                    if title_temp.find('Â¼²¥') == -1:  # ÅĞ¶Ï·¢²¼µÄ±êÌâÊÇ·ñº¬ÓĞbanWord -1ÔòÎ´Æ¥Åäµ½
+                    if title_temp.find('å½•æ’­') == -1:  # åˆ¤æ–­å‘å¸ƒçš„æ ‡é¢˜æ˜¯å¦å«æœ‰banWord -1åˆ™æœªåŒ¹é…åˆ°
                         bvid = row_json['data']['items'][i]['modules']['module_dynamic']['major']['archive']['bvid']
                         self.top20bvid.append(bvid)
-                        print(f'·¢ÏÖÒ»ÌõĞÂÊÓÆµ{bvid}²¢Ìí¼Óµ½ÁĞ±íµ±ÖĞ')
+                        print(f'å‘ç°ä¸€æ¡æ–°è§†é¢‘{bvid}å¹¶æ·»åŠ åˆ°åˆ—è¡¨å½“ä¸­')
         return row_json
 
     def main(self):
-        print('¼àÊÓÒÑÆô¶¯£¬µ±Ç°¼à¿ØµÄmidÎª£º', self.mid)
-        print('µ±Ç°ÊÓÆµÎÄ¼şÊä³öÂ·¾¶Îª£º', self.outpath)
-        self.last_date = int(time.time())  # »ñÈ¡µ±Ç°Ê±¼ä
+        print('ç›‘è§†å·²å¯åŠ¨ï¼Œå½“å‰ç›‘æ§çš„midä¸ºï¼š', self.mid)
+        print('å½“å‰è§†é¢‘æ–‡ä»¶è¾“å‡ºè·¯å¾„ä¸ºï¼š', self.outpath)
+        self.last_date = int(time.time())  # è·å–å½“å‰æ—¶é—´
         while True:
-            print('µ±Ç°Ê±¼ä£º', time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(time.time()))))
+            print('å½“å‰æ—¶é—´ï¼š', time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(time.time()))))
             times = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(self.last_date))
-            print(f'ÉÏ´ÎÂÖÑ¯Ê±¼ä£º{times}')
+            print(f'ä¸Šæ¬¡è½®è¯¢æ—¶é—´ï¼š{times}')
             try:
                 self.test()
             except:
                 continue
             self.cr_bat()
-            print('µÈ´ıÁ½·ÖÖÓºóÔÙÂÖÑ¯')
+            print('ç­‰å¾…ä¸¤åˆ†é’Ÿåå†è½®è¯¢')
             time.sleep(120)
             self.top20created = []
             self.top20bvid = []
